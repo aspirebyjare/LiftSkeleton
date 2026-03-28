@@ -8,9 +8,38 @@
 import SwiftUI
 
 struct CameraContainerView: UIViewControllerRepresentable {
-    func makeUIViewController(context: Context) -> CameraViewController {
-        CameraViewController()
+    @Binding var switchCameraTrigger: Bool
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
     }
 
-    func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {}
+    func makeUIViewController(context: Context) -> CameraViewController {
+        let controller = CameraViewController()
+        context.coordinator.controller = controller
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {
+        if switchCameraTrigger {
+            context.coordinator.controller?.switchCamera()
+
+            DispatchQueue.main.async {
+                self.switchCameraTrigger = false
+            }
+        }
+    }
+
+    final class Coordinator {
+        weak var controller: CameraViewController?
+    }
 }
+//import SwiftUI
+//
+//struct CameraContainerView: UIViewControllerRepresentable {
+//    func makeUIViewController(context: Context) -> CameraViewController {
+//        CameraViewController()
+//    }
+//
+//    func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {}
+//}
