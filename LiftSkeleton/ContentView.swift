@@ -4,15 +4,22 @@
 //
 //  Created by Jared Smith on 3/28/26.
 //
+
 import SwiftUI
 
 struct ContentView: View {
     @State private var switchCameraTrigger = false
+    @State private var recordTrigger = false
+    @State private var isRecording = false
 
     var body: some View {
         ZStack {
-            CameraContainerView(switchCameraTrigger: $switchCameraTrigger)
-                .ignoresSafeArea()
+            CameraContainerView(
+                switchCameraTrigger: $switchCameraTrigger,
+                recordTrigger: $recordTrigger,
+                isRecording: $isRecording
+            )
+            .ignoresSafeArea()
 
             VStack {
                 HStack {
@@ -33,16 +40,20 @@ struct ContentView: View {
                 }
 
                 Spacer()
+
+                Button {
+                    recordTrigger = true
+                } label: {
+                    Circle()
+                        .fill(isRecording ? Color.red : Color.white)
+                        .frame(width: 72, height: 72)
+                        .overlay(
+                            Circle()
+                                .stroke(Color.black.opacity(0.25), lineWidth: 4)
+                        )
+                        .padding(.bottom, 32)
+                }
             }
         }
     }
 }
-//import SwiftUI
-//
-//struct ContentView: View {
-//    var body: some View {
-//        CameraContainerView()
-//            .ignoresSafeArea()
-//    }
-//}
-//

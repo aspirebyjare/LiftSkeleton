@@ -9,6 +9,8 @@ import SwiftUI
 
 struct CameraContainerView: UIViewControllerRepresentable {
     @Binding var switchCameraTrigger: Bool
+    @Binding var recordTrigger: Bool
+    @Binding var isRecording: Bool
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
@@ -16,6 +18,13 @@ struct CameraContainerView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> CameraViewController {
         let controller = CameraViewController()
+
+        controller.onRecordingStateChanged = { recording in
+            DispatchQueue.main.async {
+                self.isRecording = recording
+            }
+        }
+
         context.coordinator.controller = controller
         return controller
     }
@@ -28,18 +37,17 @@ struct CameraContainerView: UIViewControllerRepresentable {
                 self.switchCameraTrigger = false
             }
         }
+
+        if recordTrigger {
+            context.coordinator.controller?.toggleRecording()
+
+            DispatchQueue.main.async {
+                self.recordTrigger = false
+            }
+        }
     }
 
     final class Coordinator {
         weak var controller: CameraViewController?
     }
 }
-//import SwiftUI
-//
-//struct CameraContainerView: UIViewControllerRepresentable {
-//    func makeUIViewController(context: Context) -> CameraViewController {
-//        CameraViewController()
-//    }
-//
-//    func updateUIViewController(_ uiViewController: CameraViewController, context: Context) {}
-//}
